@@ -12,6 +12,11 @@ services:
     depends_on:
       - redis
       - rabbitmq
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - capabilities: [gpu]
 
   worker:
     build: ./PPEDetection
