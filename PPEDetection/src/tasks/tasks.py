@@ -34,5 +34,5 @@ class PredictTask(Task):
           path=('src.services.model_service', 'model'),
           name='{}.{}'.format(__name__, 'inference'))
 def inference(self, image_byte):
-    log, result = self.model.inference(image_byte)
+    log, result = self.model.inferenceQueue(image_byte)
     return result
