@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  ppedetection:
+    build: ./PPEDetection
+    command: uvicorn main:app --host 0.0.0.0 --port 8080
+    ports:
+      - 8080:8080
+    environment:
+      - BROKER_URI=amqp://admin:123qweasdzxc@rabbitmq
+      - BACKEND_URI=redis://redis
+    depends_on:
+      - redis
+      - rabbitmq
+
+  worker:
+    build: ./PPEDetection
+    command: celery -A src.queue.worker worker --uid=nobody --gid=nogroup --hostname=worker@%h --loglevel=INFO
+    environment:
+      - BROKER_URI=amqp://admin:123qweasdzxc@rabbitmq
+      - BACKEND_URI=redis://redis
+    depends_on:
+      - ppedetection
+      - redis
+      - rabbitmq
+
+  redis:
+    image: redis:6-alpine
+    ports:
+      - 6379:6379
+
+  rabbitmq:
+    image: rabbitmq:3.8.19-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=123qweasdzxc
+    ports:
+      - 5672:5672
