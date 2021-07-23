@@ -42,34 +42,6 @@ class model:
         # filter removes empty strings (such as last line)
         return list(filter(None, names))
 
-    def imgByte2imgStr(self, image_byte):
-        '''
-        Convert image byte to image string fromat
-        '''
-
-        ## Convert byte image to numpy array image
-        nparr = np.fromstring(image_byte, np.uint8)
-        bgr_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
-        # Encode image jpg encode
-        retval, buffer_imgd = cv2.imencode('.jpg', bgr_img)
-
-        # Convert to base64
-        imgd = base64.b64encode(buffer_imgd).decode()
-
-        return imgd
-
-    def imgStr2imgByte(self, img_string):
-        '''
-        Convert image string to image byte fromat
-        '''
-
-        bgr_img = imread(io.BytesIO(base64.b64decode(img_string)))
-        _, im_buf_arr = cv2.imencode(".jpg", bgr_img)
-        byte_im = im_buf_arr.tobytes()
-
-        return byte_im
-
     def preProcessing(self, image_byte):
         '''
         Preprocessing image before feed to model from byte image to suitable image
@@ -196,3 +168,31 @@ class model:
 
         return None, result
     
+class helper:
+    def imgByte2imgStr(self, image_byte):
+        '''
+        Convert image byte to image string fromat
+        '''
+
+        ## Convert byte image to numpy array image
+        nparr = np.fromstring(image_byte, np.uint8)
+        bgr_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+        # Encode image jpg encode
+        retval, buffer_imgd = cv2.imencode('.jpg', bgr_img)
+
+        # Convert to base64
+        imgd = base64.b64encode(buffer_imgd).decode()
+
+        return imgd
+
+    def imgStr2imgByte(self, img_string):
+        '''
+        Convert image string to image byte fromat
+        '''
+
+        bgr_img = imread(io.BytesIO(base64.b64decode(img_string)))
+        _, im_buf_arr = cv2.imencode(".jpg", bgr_img)
+        byte_im = im_buf_arr.tobytes()
+
+        return byte_im
