@@ -1,4 +1,4 @@
-from src.tasks.tasks import inference
+from src.queue.tasks import inference
 
 def controller_inference(image_byte):
     result = inference(image_byte)
