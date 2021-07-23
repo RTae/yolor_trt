@@ -5,7 +5,7 @@ import base64
 import numpy as np
 from numpy import random
 from imageio import imread
-from trt_loader import TrtModel
+from src.services.trt_loader import TrtModel
 from src.utils.helper.model_utils import letterbox, non_max_suppression, drawBBox
 
 class model:
