@@ -20,4 +20,4 @@ async def result(task_id):
     if not task.ready():
         return JSONResponse(status_code=202, content={'task_id': str(task_id), 'status': 'Processing'})
     result = model().imgStr2imgByte(task.get())
-    return StreamingResponse(io.BytesIO(result), media_type='image/jpg'
+    return StreamingResponse(io.BytesIO(result), media_type='image/jpg')
