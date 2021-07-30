@@ -1,5 +1,6 @@
-import numpy as np
 import tensorrt as trt
+import numpy as np
+import pycuda.autoinit
 import pycuda.driver as cuda
 
 TRT_LOGGER = trt.Logger()
