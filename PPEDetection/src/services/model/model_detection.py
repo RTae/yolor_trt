@@ -80,7 +80,12 @@ class Detection:
                 # Draw BBox
                 if conf > self.threshold:
                     image_d = drawBBox((x1, y1), (x2, y2), image_d, self.colors)
-                    bboxs.append([int(x1.cpu().numpy()), int(y1.cpu().numpy()), int(x2.cpu().numpy()), int(y2.cpu().numpy())])
+                    bboxs.append([
+                                    int(x1.cpu().numpy()), 
+                                    int(y1.cpu().numpy()),
+                                    int(x2.cpu().numpy()) - int(x1.cpu().numpy()),
+                                    int(y2.cpu().numpy()) - int(y1.cpu().numpy()),
+                                ])
 
         return None, [image_d, bboxs]
 

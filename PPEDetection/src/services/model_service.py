@@ -19,7 +19,7 @@ class model:
     def detect(self, bgr_img):
         #log, result = self.detection.inference(bgr_img)
         #img = result[0]
-        x = [[858, 91, 1614, 1060]]
+        x = [[858, 91, 1614 - 858, 1060 - 91]]
         
         for box in x:
             bgr_img = self.pose.inference(bgr_img, box)
