@@ -13,13 +13,15 @@ class model:
     def preProcessing(self, img_string):
         bgr_img = imread(io.BytesIO(base64.b64decode(img_string)))
 
-        return bgr_img
+        return None, bgr_img
 
     def detect(self, bgr_img):
         log, result = self.detection.inference(bgr_img)
         img = result[0]
+        '''
         for box in result[1]:
             img = self.pose.inference(img, box)
+        '''
 
         return None, img
 
@@ -28,11 +30,11 @@ class model:
         _, im_buf_arr = cv2.imencode(".jpg", imgd)
         imgd = base64.b64encode(im_buf_arr).decode()
 
-        return imgd
+        return None, imgd
     
     def inference(self, byte_image):
-        bgr_img = self.preProcessing(byte_image)
+        log, bgr_img = self.preProcessing(byte_image)
         log, img = self.detect(bgr_img)
-        img = self.postProcessing(img)
+        log, img = self.postProcessing(img)
 
         return None, img
