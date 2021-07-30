@@ -7,7 +7,7 @@ from lp_net import get_pose_net, SoftArgmax2D
 
 class PoseEsitmation():
     def __init__(self, 
-                 model_weights = './models/lp_coco/lp_net_50_256x192_with_gcb.pth.tar',
+                 model_weights = './src/utils/asserts/lp_net_50_256x192_with_gcb.pth.tar',
                  img_size = (192,256), 
                  threshold = 0.4,
                  ):
