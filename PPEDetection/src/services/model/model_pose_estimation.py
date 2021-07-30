@@ -12,7 +12,8 @@ class PoseEsitmation():
                  img_size = (192,256), 
                  threshold = 0.4,
                  ):
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.device = 'cpu'
         self.img_size = img_size
         self.threshold = threshold
         logging.info(f'Model inference on {self.device}')
