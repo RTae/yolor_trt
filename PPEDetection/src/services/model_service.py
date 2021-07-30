@@ -16,14 +16,14 @@ class model:
         return None, bgr_img
 
     def detect(self, bgr_img):
-        #log, result = self.detection.inference(bgr_img)
-        #img = result[0]
-        x = [[858, 91, 1614 - 858, 1060 - 91]]
+        log, result = self.detection.inference(bgr_img)
+        img = result[0]
+        #x = [[858, 91, 1614 - 858, 1060 - 91]]
         
-        for box in x:
-            bgr_img = self.pose.inference(bgr_img, box)
+        for box in result[1]:
+            img = self.pose.inference(img, box)
 
-        return None, bgr_img
+        return None, img
 
     def postProcessing(self, imgd):
         # Convert numpy image to string image
