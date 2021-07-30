@@ -84,8 +84,8 @@ class Detection:
 
         return None, [image_d, bboxs]
 
-    def inference(self, img_string):
-        log, image_list = self.preProcessing(img_string)
+    def inference(self, bgr_img):
+        log, image_list = self.preProcessing(bgr_img)
         log, pred = self.detect(image_list[1])
         log, result = self.postProcessing(image_list[0], image_list[1], pred)
 
