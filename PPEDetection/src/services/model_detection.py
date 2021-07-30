@@ -83,7 +83,7 @@ class Detection:
             for x1, y1, x2, y2, _ , _ in det:
                 # Draw BBox
                 image_d = drawBBox((x1, y1), (x2, y2), image_d, self.colors)
-                bboxs.append([x1, y1, x2, y2,])
+                bboxs.append([x1.cpu().numpy(), y1.cpu().numpy(), x2.cpu().numpy(), y2.cpu().numpy()])
 
         # Convert to string image
         _, im_buf_arr = cv2.imencode(".jpg", image_d)
