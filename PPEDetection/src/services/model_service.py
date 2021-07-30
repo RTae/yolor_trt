@@ -23,7 +23,7 @@ class model:
         '''
 
         self.names = self.load_classes(names)
-        self.colors = [[random.randint(0, 255) for _ in range(3)] for _ in range(len(self.names))]
+        self.colors = (255,0,0)
         self.imgsz = (imgsz, imgsz)
         self.threshold = threshold
         self.iou_thres = iou_thres
@@ -131,7 +131,10 @@ class model:
         # NMS
         with torch.no_grad():
             pred = non_max_suppression(torch.tensor(pred), conf_thres=self.threshold, iou_thres=self.iou_thres)
+        
+        # Filter class only person
         det = pred[0]
+        det = det[det[:,5] == 0,:]
 
         # Check have prediction
         if det is not None and len(det):
@@ -145,7 +148,7 @@ class model:
             for x1, y1, x2, y2, conf, cls in det:
                 # Draw BBox
                 label = '%s %.2f' % (self.names[int(cls)], conf)
-                image_d = drawBBox((x1, y1), (x2, y2), image_d, label, self.colors[int(cls)])
+                image_d = drawBBox((x1, y1), (x2, y2), image_d, label, self.colors)
 
         # Convert to string image
         _, im_buf_arr = cv2.imencode(".jpg", image_d)
