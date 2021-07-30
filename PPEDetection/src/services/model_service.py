@@ -8,7 +8,7 @@ from src.services.model.model_pose_estimation import PoseEsitmation
 class model:
     def __init__(self):
         self.detection = Detection()
-        #self.pose = PoseEsitmation()
+        self.pose = PoseEsitmation()
 
     def preProcessing(self, img_string):
         bgr_img = imread(io.BytesIO(base64.b64decode(img_string)))
@@ -18,10 +18,8 @@ class model:
     def detect(self, bgr_img):
         log, result = self.detection.inference(bgr_img)
         img = result[0]
-        '''
         for box in result[1]:
             img = self.pose.inference(img, box)
-        '''
 
         return None, img
 
