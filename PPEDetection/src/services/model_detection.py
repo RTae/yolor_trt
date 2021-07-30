@@ -61,6 +61,8 @@ class Detection:
         seat a output
         '''
 
+        bboxs = []
+        
         # NMS
         with torch.no_grad():
             pred = non_max_suppression(torch.tensor(pred), conf_thres=self.threshold, iou_thres=self.iou_thres)
@@ -81,12 +83,13 @@ class Detection:
             for x1, y1, x2, y2, _ , _ in det:
                 # Draw BBox
                 image_d = drawBBox((x1, y1), (x2, y2), image_d, self.colors)
+                bboxs.append([x1, y1, x2, y2,])
 
         # Convert to string image
         _, im_buf_arr = cv2.imencode(".jpg", image_d)
         imgd = base64.b64encode(im_buf_arr).decode()
 
-        return None, imgd
+        return None, [imgd, bboxs]
 
     def inference(self, img_string):
         log, image_list = self.preProcessing(img_string)

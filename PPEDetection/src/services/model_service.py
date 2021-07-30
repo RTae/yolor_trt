@@ -5,6 +5,10 @@ class model:
         self.detection = Detection()
     
     def inference(self, byte_image):
+        # Person detection
         log, result = self.detection.inference(byte_image)
+        img = result[0]
+        bbox = result[1]
+        print(bbox)
 
-        return None, result
+        return None, img
