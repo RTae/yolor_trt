@@ -2,6 +2,7 @@ import cv2
 import torch
 import numpy as np
 import torchvision.transforms as transforms
+import logging
 from src.services.model.core.lp_net import get_pose_net, SoftArgmax2D
 
 
@@ -11,9 +12,10 @@ class PoseEsitmation():
                  img_size = (192,256), 
                  threshold = 0.4,
                  ):
-        self.device = torch.device("cuda")
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.img_size = img_size
         self.threshold = threshold
+        logging.info(f'Model inference on {self.device}')
 
         self.model = get_pose_net()
         self.model.load_state_dict(torch.load(model_weights))
