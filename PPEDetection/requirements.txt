@@ -41,4 +41,4 @@ vine==5.0.0
 watchgod==0.7
 wcwidth==0.2.5
 websockets==9.1
-mmcv
+onnxruntime==1.8.1

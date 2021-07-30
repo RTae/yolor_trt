@@ -111,15 +111,11 @@ class TrtModel(object):
         assert batch_size <= self.max_batch_size
         assert max(im_width, im_height) <= self.max_size, "Invalid shape: {}x{}, max shape: {}".format(im_width, im_height, self.max_size)
         allocate_place = np.prod(input.shape)
-        # print('allocate_place', input.shape)
         self.inputs[0].host[:allocate_place] = input.flatten(order='C').astype(np.float32)
         self.context.set_binding_shape(0, input.shape)
         trt_outputs = do_inference(
             self.context, bindings=self.bindings,
             inputs=self.inputs, outputs=self.outputs, stream=self.stream)
-        # print(self.inputs, self.outputs, self.bindings, self.stream, self.input_shapes, self.out_shapes, self.out_names, self.max_batch_size)
-        # Reshape TRT outputs to original shape instead of flattened array
-        # print(trt_outputs[0].shape)
         if deflatten:
             out_shapes = [(batch_size, ) + (self.get_number_of_boxes(im_width, im_height), 85)]
             trt_outputs = [output[:np.prod(shape)].reshape(shape) for output, shape in zip(trt_outputs, out_shapes)]

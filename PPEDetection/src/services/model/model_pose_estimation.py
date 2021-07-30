@@ -1,28 +1,26 @@
 import cv2
 import torch
 import numpy as np
+import onnxruntime as rt
 import torchvision.transforms as transforms
-import logging
-from src.services.model.core.lp_net import get_pose_net, SoftArgmax2D
-
+from src.services.model.core.softmax2d import SoftArgmax2D
 
 class PoseEsitmation():
     def __init__(self, 
-                 model_weights = './src/utils/asserts/lp_net_50_256x192_with_gcb.pth.tar',
+                 model_weights = './src/utils/asserts/lp_gcb_256x192.quantized.onnx',
                  img_size = (192,256), 
                  threshold = 0.4,
                  ):
-        # self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        self.device = 'cpu'
+        self.device = torch.device("cuda")
         self.img_size = img_size
         self.threshold = threshold
-        torch.backends.cudnn.enabled=False
-        logging.info(f'Model inference on {self.device}')
 
-        self.model = get_pose_net()
-        self.model.load_state_dict(torch.load(model_weights))
-        self.model.eval()
-        #self.model.to(self.device)
+        opts = rt.SessionOptions()
+        opts.intra_op_num_threads = 6
+        opts.execution_mode = rt.ExecutionMode.ORT_SEQUENTIAL
+        opts.graph_optimization_level = rt.GraphOptimizationLevel.ORT_ENABLE_ALL
+        self.model = rt.InferenceSession(model_weights, sess_options=opts)
+        self.model.set_providers(['CPUExecutionProvider'])
         self.beta_soft_argmax = SoftArgmax2D(beta=160)
 
         self.transform = transforms.Compose([
@@ -158,10 +156,11 @@ class PoseEsitmation():
         return [input, c, s]
     
     def detect(self, data, c, s):
-        with torch.no_grad():
-            pred = self.model(data)
-            preds, conf = self.__get_final_preds(pred.numpy(), np.asarray([c]), np.asarray([s]))
-            result = np.concatenate([preds,conf], axis=1)
+        data = data.numpy()
+        ort_inputs = {self.model.get_inputs()[0].name: data}
+        preds = self.model.run(None, ort_inputs)
+        preds, conf = self.__get_final_preds(preds[0], np.asarray([c]), np.asarray([s]))
+        result = np.concatenate([preds,conf], axis=1)
 
         return result
 
