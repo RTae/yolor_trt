@@ -3,4 +3,4 @@
 .pip
 .config
 .cache
-*.pth.tar
+*.onnx
