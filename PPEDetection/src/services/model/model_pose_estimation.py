@@ -16,6 +16,7 @@ class PoseEsitmation():
         self.device = 'cpu'
         self.img_size = img_size
         self.threshold = threshold
+        torch.backends.cudnn.enabled=False
         logging.info(f'Model inference on {self.device}')
 
         self.model = get_pose_net()
