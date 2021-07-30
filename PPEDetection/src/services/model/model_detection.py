@@ -1,10 +1,8 @@
-import io
 import cv2
 import torch
 import base64
 import numpy as np
-from imageio import imread
-from src.services.trt_loader import TrtModel
+from src.services.model.core.trt_loader import TrtModel
 from src.utils.helper.model_utils import letterbox, non_max_suppression, drawBBox
 
 class Detection:
@@ -29,11 +27,11 @@ class Detection:
         # load model
         self.model = TrtModel(model_weights, imgsz)
 
-    def preProcessing(self, img_string):
+    def preProcessing(self, bgr_img):
+        '''
+        Prepocessing image before feed to model
+        '''
 
-        bgr_img = imread(io.BytesIO(base64.b64decode(img_string)))
-
-        ## Prepocessing image before feed to model
         # Padded resize
         inp = letterbox(bgr_img, new_shape=self.imgsz, auto_size=64)[0]
         # BGR to RGB
@@ -45,13 +43,14 @@ class Detection:
 
         return None, [bgr_img, inp]
     
-    def detect(self, image):
+    def detect(self, data):
         '''
         Object detection from coco label
         model name: YOLOR_CSP_X
         image : input image that already prepocessing 
         '''
-        pred = self.model.run(image)[0]
+
+        pred = self.model.run(data)[0]
         return None, pred
 
 
@@ -80,16 +79,13 @@ class Detection:
             det[:, 1] *= h/height
             det[:, 2] *= w/width
             det[:, 3] *= h/height
-            for x1, y1, x2, y2, _ , _ in det:
+            for x1, y1, x2, y2, conf , _ in det:
                 # Draw BBox
-                image_d = drawBBox((x1, y1), (x2, y2), image_d, self.colors)
-                bboxs.append([x1.cpu().numpy(), y1.cpu().numpy(), x2.cpu().numpy(), y2.cpu().numpy()])
+                if conf > self.threshold:
+                    image_d = drawBBox((x1, y1), (x2, y2), image_d, self.colors)
+                    bboxs.append([x1.cpu().numpy(), y1.cpu().numpy(), x2.cpu().numpy(), y2.cpu().numpy()])
 
-        # Convert to string image
-        _, im_buf_arr = cv2.imencode(".jpg", image_d)
-        imgd = base64.b64encode(im_buf_arr).decode()
-
-        return None, [imgd, bboxs]
+        return None, [image_d, bboxs]
 
     def inference(self, img_string):
         log, image_list = self.preProcessing(img_string)
