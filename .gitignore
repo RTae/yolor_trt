@@ -3,3 +3,4 @@
 .pip
 .config
 .cache
+*.pth.tar
