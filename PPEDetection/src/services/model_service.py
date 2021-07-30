@@ -7,7 +7,7 @@ from src.services.model.model_pose_estimation import PoseEsitmation
 
 class model:
     def __init__(self):
-        #self.detection = Detection()
+        self.detection = Detection()
         self.pose = PoseEsitmation()
 
     def preProcessing(self, img_string):
