@@ -21,7 +21,7 @@ class PoseEsitmation():
         self.model = get_pose_net()
         self.model.load_state_dict(torch.load(model_weights))
         self.model.eval()
-        self.model.to(self.device)
+        #self.model.to(self.device)
         self.beta_soft_argmax = SoftArgmax2D(beta=160)
 
         self.transform = transforms.Compose([
@@ -152,14 +152,14 @@ class PoseEsitmation():
         r = 0
         trans = self.__get_affine_transform(c, s, r, self.img_size)
         input = cv2.warpAffine( img, trans, (self.img_size[0], self.img_size[1]), flags=cv2.INTER_LINEAR)
-        input = self.transform(input).unsqueeze(0).to(self.device)
+        input = self.transform(input).unsqueeze(0)
         
         return [input, c, s]
     
     def detect(self, data, c, s):
         with torch.no_grad():
             pred = self.model(data)
-            preds, conf = self.__get_final_preds(pred.clone().cpu().numpy(), np.asarray([c]), np.asarray([s]))
+            preds, conf = self.__get_final_preds(pred.numpy(), np.asarray([c]), np.asarray([s]))
             result = np.concatenate([preds,conf], axis=1)
 
         return result
