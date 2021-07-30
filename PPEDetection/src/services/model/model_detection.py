@@ -1,6 +1,4 @@
-import cv2
 import torch
-import base64
 import numpy as np
 from src.services.model.core.trt_loader import TrtModel
 from src.utils.helper.model_utils import letterbox, non_max_suppression, drawBBox
@@ -10,8 +8,7 @@ class Detection:
                 model_weights = './src/utils/asserts/yolor_csp_x_star-fp16.trt', 
                 imgsz = 896, 
                 threshold = 0.4,
-                iou_thres = 0.6,
-                names = './src/utils/asserts/coco.names'):
+                iou_thres = 0.6):
         '''
         Model config
         model_weights : weight of model ,default /src/assert/yolor_csp_x_star.qunt.onnx

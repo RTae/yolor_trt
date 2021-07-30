@@ -2,7 +2,7 @@ import cv2
 import torch
 import numpy as np
 import torchvision.transforms as transforms
-from lp_net import get_pose_net, SoftArgmax2D
+from src.services.model.core.lp_net import get_pose_net, SoftArgmax2D
 
 
 class PoseEsitmation():
