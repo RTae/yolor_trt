@@ -145,6 +145,9 @@ class PoseEsitmation():
             preds[i] = self.__transform_preds(preds[i], center[i], scale[i], [heatmap_width, heatmap_height])
 
         return preds[0], maxval[0]
+    
+    def __draw_key_point(self, img, x, y):
+        return cv2.circle(img, (int(x), int(y)), 2, (0, 0, 255), 2)
 
     def preProcessing(self, img, bbox):
         c, s = self.__box2cs(bbox, self.img_size[0], self.img_size[1])
@@ -167,8 +170,7 @@ class PoseEsitmation():
     def postProcessing(self, pred, img):
         for x, y, conf in pred:
             if conf > self.threshold:
-                x, y = int(x), int(y)
-                cv2.circle(img, (x, y), 2, (0, 0, 255), 2)
+                self.__draw_key_point(img, x, y)
         
         return img
     
