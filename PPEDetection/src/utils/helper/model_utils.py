@@ -144,20 +144,13 @@ def box_iou(box1, box2):
     inter = (torch.min(box1[:, None, 2:], box2[:, 2:]) - torch.max(box1[:, None, :2], box2[:, :2])).clamp(0).prod(2)
     return inter / (area1[:, None] + area2 - inter)  # iou = inter / (area1 + area2 - inter)
 
-def drawBBox(start, end, image, label, color):
+def drawBBox(start, end, image, color):
     image_h, image_w, _ = image.shape
-    fontScale = image_h/700
     bbox_thick = int(0.6 * (image_h + image_w) / 300)
     start = (int(start[0]), int(start[1]))
     end = (int(end[0]), int(end[1]))
-
     image = cv2.rectangle(image, start, end, color, bbox_thick)
-    t_size = cv2.getTextSize(label, 0, fontScale, thickness=bbox_thick // 2)[0]
-    end_fillbox = (start[0] + t_size[0], start[1] - t_size[1] - 10)
-    image = cv2.rectangle(image, start, (end[0], int(end_fillbox[1])), color, -1)
-    image = cv2.putText(image, label, (int(start[0] + 5),int(start[1] - 5)), cv2.FONT_HERSHEY_SIMPLEX,
-                        fontScale, (0, 0, 0), bbox_thick, lineType=cv2.LINE_AA)
-
+    
     return image
 
 def imgByte2imgStr(image_byte):

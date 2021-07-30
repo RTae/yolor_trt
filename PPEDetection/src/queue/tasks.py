@@ -40,6 +40,6 @@ def inference(self, imgd):
     Essentially the run method of PredictTask
     """
     
-    log, result = self.model.inferenceQueue(imgd)
+    log, result = self.model.inference(imgd)
 
     return result
