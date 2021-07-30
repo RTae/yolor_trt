@@ -1,8 +1,11 @@
+import io
 import cv2
 import time
 import torch
+import base64
 import torchvision
 import numpy as np
+from imageio import imread
 
 def letterbox(img, new_shape=(640, 640), color=(114, 114, 114), auto=True, scaleFill=False, scaleup=True, auto_size=32):
     # Resize image to a 32-pixel-multiple rectangle https://github.com/ultralytics/yolov3/issues/232
@@ -156,3 +159,31 @@ def drawBBox(start, end, image, label, color):
                         fontScale, (0, 0, 0), bbox_thick, lineType=cv2.LINE_AA)
 
     return image
+
+def imgByte2imgStr(image_byte):
+    '''
+    Convert image byte to image string fromat
+    '''
+
+    ## Convert byte image to numpy array image
+    nparr = np.fromstring(image_byte, np.uint8)
+    bgr_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+
+    # Encode image jpg encode
+    retval, buffer_imgd = cv2.imencode('.jpg', bgr_img)
+
+    # Convert to base64
+    imgd = base64.b64encode(buffer_imgd).decode()
+
+    return imgd
+
+def imgStr2imgByte(img_string):
+    '''
+    Convert image string to image byte fromat
+    '''
+
+    bgr_img = imread(io.BytesIO(base64.b64decode(img_string)))
+    _, im_buf_arr = cv2.imencode(".jpg", bgr_img)
+    byte_im = im_buf_arr.tobytes()
+
+    return byte_im

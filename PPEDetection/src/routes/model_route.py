@@ -1,7 +1,7 @@
 import io
 from celery.result import AsyncResult
 from fastapi.responses import JSONResponse
-from src.services.model_service import helper
+from src.utils.helper.model_utils import imgStr2imgByte
 from fastapi import APIRouter, File, UploadFile
 from starlette.responses import StreamingResponse
 from src.controllers.model_controller import controller_inference
@@ -19,5 +19,5 @@ async def result(task_id):
     task = AsyncResult(task_id)
     if not task.ready():
         return JSONResponse(status_code=202, content={'task_id': str(task_id), 'status': 'Processing'})
-    result = helper().imgStr2imgByte(task.get())
+    result = imgStr2imgByte(task.get())
     return StreamingResponse(io.BytesIO(result), media_type='image/jpg')
